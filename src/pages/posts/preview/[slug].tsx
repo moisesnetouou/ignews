@@ -1,5 +1,5 @@
 import { asHTML, asText } from "@prismicio/helpers";
-import { GetServerSideProps, GetStaticProps } from "next"
+import { GetServerSideProps, GetStaticPaths, GetStaticProps } from "next"
 import { getSession, useSession } from "next-auth/react"
 import Head from "next/head";
 import Link from "next/link";
@@ -56,9 +56,15 @@ export default function PostPreview({post}:PostPreviewProps){
   )
 }
 
-export const getStaticPaths = () => {
+export const getStaticPaths: GetStaticPaths = () => {
   return {
-    paths: [],
+    paths: [
+      {
+        params: {
+          slug: 'prisma-uma-das-melhores-coisas-que-ja-aconteceu-no'
+        }
+      }
+    ],
     fallback: 'blocking'
   }
 }
@@ -83,6 +89,7 @@ export const getStaticProps: GetStaticProps = async({ params}) => {
   return {
     props: {
       post
-    }
+    },
+    revalidate: 60 * 30 // Quando vai ser atualizado novamente. 1 vez a cada 30 minutos
   }
 }
