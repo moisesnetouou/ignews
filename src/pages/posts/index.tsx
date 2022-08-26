@@ -38,17 +38,15 @@ export default function Posts(){
 export const getStaticProps: GetStaticProps = async () => {
   const prismic = createClient();
 
-  const page = await prismic.getAllByType('publication', {
+  const response = await prismic.getByType('publication', {
     fetch: ['publication.title', 'publication.content'],
     pageSize: 100
   })
 
-  console.log(page)
+  console.log(JSON.stringify(response, null, 2))
 
   return{
     props: {
-
     }
   }
-
 }
