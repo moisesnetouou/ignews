@@ -2,6 +2,10 @@ import {AppProps} from 'next/app';
 import {SessionProvider} from 'next-auth/react';
 import { Header } from '../components/Header';
 
+import { PrismicProvider } from '@prismicio/react'
+import { PrismicPreview } from '@prismicio/next'
+import { repositoryName, createClient} from '../../prismicio'
+
 import '../styles/global.scss';
 
 function MyApp({ 
@@ -9,10 +13,14 @@ function MyApp({
   pageProps: {session, ...pageProps} 
 }: AppProps) {
   return (
-    <SessionProvider session={session}>
-      <Header />
-      <Component {...pageProps} />
-    </SessionProvider>
+    <PrismicProvider>
+      <PrismicPreview repositoryName={repositoryName}> 
+        <SessionProvider session={session}>
+          <Header />
+          <Component {...pageProps} />
+        </SessionProvider>
+       </PrismicPreview> 
+    </PrismicProvider>
   )
 }
 
