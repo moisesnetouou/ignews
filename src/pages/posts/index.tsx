@@ -1,9 +1,21 @@
 import { createClient } from '../../../prismicio';
 import { GetStaticProps } from 'next';
+import {asText} from '@prismicio/helpers';
 import Head from 'next/head';
 import styles from './styles.module.scss';
 
-export default function Posts(){
+interface Post {
+  slug: string;
+  title: string;
+  excerpt: string;
+  updatedAt: string;
+}
+
+interface PostProps {
+  posts: Post[]
+}
+
+export default function Posts({posts}: PostProps){
   return(
     <>
       <Head>
@@ -12,23 +24,13 @@ export default function Posts(){
 
       <main className={styles.container}>
         <div className={styles.posts}>
-          <a href="">
-            <time>25 de agosto de 2021</time>
-            <strong>NextJs ou NuxtJs</strong>
-            <p>Qual destes dois é o melhor para o meu projeto? E eu digo... depende, sempre depende.</p>
-          </a>
-
-          <a href="">
-            <time>25 de agosto de 2021</time>
-            <strong>NextJs ou NuxtJs</strong>
-            <p>Qual destes dois é o melhor para o meu projeto? E eu digo... depende, sempre depende.</p>
-          </a>
-
-          <a href="">
-            <time>25 de agosto de 2021</time>
-            <strong>NextJs ou NuxtJs</strong>
-            <p>Qual destes dois é o melhor para o meu projeto? E eu digo... depende, sempre depende.</p>
-          </a>
+          {posts.map(post => (
+            <a key={post.slug} href="">
+              <time>{post.updatedAt}</time>
+              <strong>{post.title}</strong>
+              <p>{post.excerpt}</p>
+            </a>
+          ))}
         </div>
       </main>
     </>
@@ -43,10 +45,22 @@ export const getStaticProps: GetStaticProps = async () => {
     pageSize: 100
   })
 
-  console.log(JSON.stringify(response, null, 2))
+  const posts = response.results.map(post => {
+    return {
+      slug: post.uid,
+      title: asText(post.data.title),
+      excerpt: post.data.content.find(content => content.type === 'paragraph')?.text ?? '',
+      updatedAt: new Date(post.last_publication_date).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      })
+    }
+  })
 
   return{
     props: {
+      posts
     }
   }
 }
