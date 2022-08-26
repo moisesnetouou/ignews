@@ -32,14 +32,16 @@ export const repositoryName = prismic.getRepositoryName(sm.apiEndpoint)
  * @param config {prismicNext.CreateClientConfig} - Configuration for the Prismic client.
  */
 
-export const createClient = (config = {}) => {
+export const createClient = (config = {}, req?: unknown) => {
   const client = prismic.createClient(
-    sm.apiEndpoint, 
-    {accessToken: process.env.PRISMIC_ACCESS_TOKEN})
+    sm.apiEndpoint,
+    { accessToken: process.env.PRISMIC_ACCESS_TOKEN })
 
   prismicNext.enableAutoPreviews({
     client,
+    //@ts-ignore
     previewData: config.previewData,
+    //@ts-ignore
     req: config.req,
   })
 
