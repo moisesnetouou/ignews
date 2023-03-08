@@ -1,23 +1,23 @@
-import { createClient } from '../../../prismicio';
-import { GetStaticProps } from 'next';
-import {asText} from '@prismicio/helpers';
-import Head from 'next/head';
-import styles from './styles.module.scss';
-import Link from 'next/link';
+import { createClient } from '../../../prismicio'
+import { GetStaticProps } from 'next'
+import { asText } from '@prismicio/helpers'
+import Head from 'next/head'
+import styles from './styles.module.scss'
+import Link from 'next/link'
 
 interface Post {
-  slug: string;
-  title: string;
-  excerpt: string;
-  updatedAt: string;
+  slug: string
+  title: string
+  excerpt: string
+  updatedAt: string
 }
 
 interface PostProps {
   posts: Post[]
 }
 
-export default function Posts({posts}: PostProps){
-  return(
+export default function Posts({ posts }: PostProps) {
+  return (
     <>
       <Head>
         <title>Posts | Ignews</title>
@@ -25,7 +25,7 @@ export default function Posts({posts}: PostProps){
 
       <main className={styles.container}>
         <div className={styles.posts}>
-          {posts.map(post => (
+          {posts.map((post) => (
             <Link key={post.slug} href={`/posts/${post.slug}`}>
               <a>
                 <time>{post.updatedAt}</time>
@@ -37,33 +37,38 @@ export default function Posts({posts}: PostProps){
         </div>
       </main>
     </>
-  );
+  )
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const prismic = createClient();
+  const prismic = createClient()
 
   const response = await prismic.getByType('publication', {
     fetch: ['publication.title', 'publication.content'],
-    pageSize: 100
+    pageSize: 100,
   })
 
-  const posts = response.results.map(post => {
+  const posts = response.results.map((post) => {
     return {
       slug: post.uid,
       title: asText(post.data.title),
-      excerpt: post.data.content.find(content => content.type === 'paragraph')?.text ?? '',
-      updatedAt: new Date(post.last_publication_date).toLocaleDateString('pt-BR', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
-      })
+      excerpt:
+        post.data.content.find((content) => content.type === 'paragraph')
+          ?.text ?? '',
+      updatedAt: new Date(post.last_publication_date).toLocaleDateString(
+        'pt-BR',
+        {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric',
+        },
+      ),
     }
   })
 
-  return{
+  return {
     props: {
-      posts
-    }
+      posts,
+    },
   }
 }
