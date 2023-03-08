@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "eslint src/**/*.ts* --fix",
-    "slicemachine": "start-slicemachine"
+    "slicemachine": "start-slicemachine",
+    "test": "jest --watch"
   },
   "dependencies": {
     "@prismicio/client": "^6.7.0",
