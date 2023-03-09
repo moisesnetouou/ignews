@@ -15,7 +15,7 @@ const posts = [
   },
 ]
 
-describe('Home page', () => {
+describe('Posts page', () => {
   it('renders correctly', () => {
     render(<Posts posts={posts} />)
 
